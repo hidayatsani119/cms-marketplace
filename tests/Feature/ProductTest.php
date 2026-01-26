@@ -98,7 +98,7 @@ class ProductTest extends TestCase
                 'quantity' => 10,
             ]
         ]);
-        self::assertEquals(8, count($response->json()['data']));
+        self::assertEquals(9, count($response->json()['data']));
     }
 
     public function testUpdateProduct()
@@ -148,6 +148,7 @@ class ProductTest extends TestCase
             'price' => 200,
             'quantity' => 20,
             'image' => $image,
+            'status' => ProductStatusEnum::INACTIVE->value,
         ];
         $response = $this->withHeader('Authorization','testToken')
             ->put("/api/products/{$product->id}",$payload);
@@ -160,6 +161,7 @@ class ProductTest extends TestCase
                 'description' => 'new test product 2',
                 'price' => 200,
                 'quantity' => 20,
+                'status' => ProductStatusEnum::INACTIVE->value,
             ]
         ]);
 
