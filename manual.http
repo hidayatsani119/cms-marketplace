@@ -1,0 +1,12 @@
+GET http://localhost:80/api/item?id=99
+Accept: application/json
+
+###
+DELETE http://127.0.0.1:8000/api/users
+Content-Type: application/json
+Accept: application/json
+Authorization: e545f08a-ab4b-4814-a5fc-de3e38c856e5
+
+
+
+###

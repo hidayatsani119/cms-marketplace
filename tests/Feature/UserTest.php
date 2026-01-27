@@ -16,14 +16,19 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
 
 
-        $response = $this->delete('/api/users', [
-            'Authorization' => 'testToken',
-        ]);
+        $response = $this->withHeader('Authorization','testToken')->delete('/api/users');
+
+        $user = User::where('email','admin@mail.com')->first();
+
+
 
         dump($response->json());
-        $response->assertStatus(401)->assertJson([
-            "errors" => "Unauthorized.",
+        $response->assertStatus(200)->assertJson([
+            "message" => "User logged out successfully.",
+            "data" => null
         ]);
+
+        self::assertNull($user->token);
     }
     /**
      * A basic feature test example.

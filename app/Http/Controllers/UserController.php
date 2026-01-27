@@ -31,7 +31,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Login successful',
-            'token' => new UserResource($user),
+            'data' => new UserResource($user),
         ],200);
 
     }
@@ -52,7 +52,8 @@ class UserController extends Controller
         $User->save();
 
         return response()->json([
-            'errors' => 'Unauthorized.',
-        ],401);
+            'message' => 'User logged out successfully.',
+            'data' => null
+        ],200);
     }
 }
