@@ -25,7 +25,8 @@ class Product_qr_code extends Model
 
     public function getQrImageUrlAttribute()
     {
-        return "http://127.0.0.1:8000" . Storage::url($this->qr_image_path);
+        $appUrl = config('app.url');
+        return $appUrl . Storage::url($this->qr_image_path);
     }
 
     protected static function booted()

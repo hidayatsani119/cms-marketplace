@@ -30,7 +30,8 @@ class Product extends Model
 
     public function getImageUrlAttribute()
     {
-        return "http://127.0.0.1:8000".Storage::url($this->image_path);
+        $appUrl = config('app.url');
+        return $appUrl.Storage::url($this->image_path);
     }
 
     protected static function booted()
