@@ -4,7 +4,6 @@ use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductQrCodeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +24,7 @@ Route::post("qr/{qr_token}", [ProductQrCodeController::class, 'verify']);
 Route::get('products', [ProductController::class, 'getAll']);
 Route::get("products/{product_id}", [ProductController::class, 'get']);
 
-Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function () {
+Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(callback: function () {
     //users
     Route::get('users', [UserController::class, 'get']);
     Route::delete('users', [UserController::class, 'logout']);
