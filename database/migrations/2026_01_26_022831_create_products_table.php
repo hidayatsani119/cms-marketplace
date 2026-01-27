@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable(false);
             $table->string('name',100)->nullable(false);
-            $table->string('description',100)->nullable(false);
+            $table->text('description')->nullable(false);
             $table->integer('price')->nullable(false);
             $table->integer('quantity')->nullable(false);
             $table->string('image_path'  )->nullable();
