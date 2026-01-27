@@ -11,15 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://api.cmsmarketplace.com/api",
-      "description": "Production server"
-    },
-    {
-      "url": "https://staging-api.cmsmarketplace.com/api",
-      "description": "Staging server"
-    },
-    {
-      "url": "http://localhost:8000/api",
+      "url": "http://127.0.0.1:8000/api",
       "description": "Local development server"
     }
   ],
@@ -46,14 +38,14 @@
       "post": {
         "tags": ["Authentication"],
         "summary": "Login user",
-        "description": "Authenticate user and return access token",
+        "description": "Authenticate user with email and password, returns a UUID token",
         "operationId": "loginUser",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
+                "$ref": "#/components/schemas/UserLoginRequest"
               }
             }
           }
@@ -64,16 +56,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/LoginResponse"
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "422": {
-            "$ref": "#/components/responses/ValidationError"
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
           }
         }
       },
@@ -89,11 +78,11 @@
         ],
         "responses": {
           "200": {
-            "description": "User retrieved successfully",
+            "description": "Get user success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/UserResponse"
                 }
               }
             }
@@ -115,17 +104,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Logout successful",
+            "description": "User logged out successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully logged out"
-                    }
-                  }
+                  "$ref": "#/components/schemas/LogoutResponse"
                 }
               }
             }
@@ -140,51 +123,33 @@
       "post": {
         "tags": ["QR Codes"],
         "summary": "Verify QR code",
-        "description": "Verify a product QR code token",
+        "description": "Verify a product QR code token and retrieve product information",
         "operationId": "verifyQrCode",
         "parameters": [
           {
             "name": "qr_token",
             "in": "path",
             "required": true,
-            "description": "QR code token to verify",
+            "description": "QR code token (UUID format)",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "additional_data": {
-                    "type": "object",
-                    "description": "Any additional verification data"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "QR code verified successfully",
+            "description": "QR Code Verified Successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QrCodeVerification"
+                  "$ref": "#/components/schemas/QrCodeVerificationResponse"
                 }
               }
             }
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/ValidationError"
           }
         }
       }
@@ -195,74 +160,26 @@
         "summary": "List all products",
         "description": "Retrieve a list of all products (public endpoint)",
         "operationId": "getAllProducts",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number for pagination",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            }
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "description": "Number of items per page",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 15
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search products by name or description",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort field",
-            "schema": {
-              "type": "string",
-              "enum": ["name", "price", "created_at"],
-              "default": "created_at"
-            }
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Sort order",
-            "schema": {
-              "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "desc"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Products retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductList"
+                  "$ref": "#/components/schemas/ProductListResponse"
                 }
               }
             }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "post": {
         "tags": ["Products"],
         "summary": "Create a new product",
-        "description": "Create a new product (requires authentication)",
+        "description": "Create a new product with optional image upload (requires authentication)",
         "operationId": "createProduct",
         "security": [
           {
@@ -272,9 +189,9 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/CreateProductRequest"
+                "$ref": "#/components/schemas/ProductCreateRequest"
               }
             }
           }
@@ -285,16 +202,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Product"
+                  "$ref": "#/components/schemas/ProductResponse"
                 }
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
-          },
-          "422": {
-            "$ref": "#/components/responses/ValidationError"
           }
         }
       }
@@ -322,7 +239,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Product"
+                  "$ref": "#/components/schemas/ProductResponse"
                 }
               }
             }
@@ -335,7 +252,7 @@
       "put": {
         "tags": ["Products"],
         "summary": "Update product",
-        "description": "Update an existing product (requires authentication)",
+        "description": "Update an existing product with optional image upload (requires authentication)",
         "operationId": "updateProduct",
         "security": [
           {
@@ -356,9 +273,9 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProductRequest"
+                "$ref": "#/components/schemas/ProductUpdateRequest"
               }
             }
           }
@@ -369,19 +286,19 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Product"
+                  "$ref": "#/components/schemas/ProductResponse"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/ValidationError"
           }
         }
       },
@@ -412,13 +329,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Product deleted successfully"
-                    }
-                  }
+                  "$ref": "#/components/schemas/ProductDeleteResponse"
                 }
               }
             }
@@ -454,38 +365,13 @@
             }
           }
         ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "size": {
-                    "type": "integer",
-                    "description": "QR code size in pixels",
-                    "minimum": 100,
-                    "maximum": 1000,
-                    "default": 300
-                  },
-                  "format": {
-                    "type": "string",
-                    "description": "QR code image format",
-                    "enum": ["png", "svg"],
-                    "default": "png"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "201": {
-            "description": "QR code created successfully",
+            "description": "QR Code Generated Successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QrCode"
+                  "$ref": "#/components/schemas/QrCodeCreateResponse"
                 }
               }
             }
@@ -495,9 +381,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "422": {
-            "$ref": "#/components/responses/ValidationError"
           }
         }
       }
@@ -508,8 +391,8 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "Enter your bearer token in the format: Bearer {token}"
+        "bearerFormat": "UUID",
+        "description": "JWT Bearer token authentication. Include the token in the Authorization header as: `Authorization: Bearer {token}`. The token is a UUID string returned from the login endpoint (/users POST). Example: `Authorization: Bearer 550e8400-e29b-41d4-a716-446655440000`"
       }
     },
     "responses": {
@@ -518,11 +401,10 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/Error"
+              "$ref": "#/components/schemas/ErrorResponse"
             },
             "example": {
-              "message": "Unauthenticated.",
-              "errors": {}
+              "errors": "Unauthenticated"
             }
           }
         }
@@ -532,27 +414,47 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/Error"
+              "$ref": "#/components/schemas/ErrorResponse"
             },
-            "example": {
-              "message": "Resource not found.",
-              "errors": {}
+            "examples": {
+              "product": {
+                "summary": "Product not found",
+                "value": {
+                  "errors": "Product not found"
+                }
+              },
+              "qrCode": {
+                "summary": "QR Code not found",
+                "value": {
+                  "errors": "QR Code Not Found."
+                }
+              }
             }
           }
         }
       },
-      "ValidationError": {
-        "description": "Validation error - Invalid input data",
+      "BadRequest": {
+        "description": "Bad Request - Validation error or invalid credentials",
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/Error"
+              "$ref": "#/components/schemas/ErrorResponse"
             },
-            "example": {
-              "message": "The given data was invalid.",
-              "errors": {
-                "email": ["The email field is required."],
-                "password": ["The password must be at least 8 characters."]
+            "examples": {
+              "validation": {
+                "summary": "Validation errors",
+                "value": {
+                  "errors": {
+                    "email": ["The email field is required."],
+                    "password": ["The password field is required."]
+                  }
+                }
+              },
+              "credentials": {
+                "summary": "Invalid credentials",
+                "value": {
+                  "errors": "The provided credentials are incorrect."
+                }
               }
             }
           }
@@ -560,7 +462,7 @@
       }
     },
     "schemas": {
-      "LoginRequest": {
+      "UserLoginRequest": {
         "type": "object",
         "required": ["email", "password"],
         "properties": {
@@ -574,42 +476,58 @@
             "type": "string",
             "format": "password",
             "description": "User password",
-            "minLength": 8,
-            "example": "SecurePass123!"
+            "example": "password123"
           }
         }
       },
-      "AuthResponse": {
+      "LoginResponse": {
         "type": "object",
         "properties": {
-          "access_token": {
+          "message": {
             "type": "string",
-            "description": "JWT access token",
-            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+            "example": "Login successful"
           },
-          "token_type": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Authentication token (UUID)",
+                "example": "550e8400-e29b-41d4-a716-446655440000"
+              }
+            }
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
             "type": "string",
-            "description": "Token type",
-            "example": "bearer"
+            "example": "Get user success."
           },
-          "expires_in": {
-            "type": "integer",
-            "description": "Token expiration time in seconds",
-            "example": 3600
-          },
-          "user": {
+          "data": {
             "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "LogoutResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User logged out successfully."
+          },
+          "data": {
+            "type": "null",
+            "nullable": true
           }
         }
       },
       "User": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "description": "User ID",
-            "example": 1
-          },
           "name": {
             "type": "string",
             "description": "User full name",
@@ -620,31 +538,91 @@
             "format": "email",
             "description": "User email address",
             "example": "john.doe@example.com"
-          },
-          "role": {
+          }
+        }
+      },
+      "ProductCreateRequest": {
+        "type": "object",
+        "required": ["name", "description", "price", "quantity"],
+        "properties": {
+          "name": {
             "type": "string",
-            "description": "User role",
-            "enum": ["admin", "vendor", "customer"],
-            "example": "customer"
+            "maxLength": 100,
+            "description": "Product name",
+            "example": "Premium WordPress Theme"
           },
-          "avatar": {
+          "description": {
             "type": "string",
-            "format": "uri",
+            "description": "Product description",
+            "example": "A beautiful and responsive WordPress theme for modern websites"
+          },
+          "price": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Product price (must be greater than 0)",
+            "example": 59
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Product quantity (must be greater than or equal to 0)",
+            "example": 100
+          },
+            "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "nullable": true,
+                "default": "active",
+                "description": "Product status (must be active or inactive)",
+                "example": "active"
+            },
+          "image": {
+            "type": "string",
+            "format": "binary",
+            "description": "Product image file (jpg, jpeg, png, max 1MB)",
+            "nullable": true
+          }
+        }
+      },
+      "ProductUpdateRequest": {
+        "type": "object",
+        "required": ["name", "description", "price", "quantity"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Product name",
+            "example": "Premium WordPress Theme"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description",
+            "example": "A beautiful and responsive WordPress theme for modern websites"
+          },
+          "price": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Product price (must be greater than 0)",
+            "example": 59
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Product quantity (must be greater than or equal to 0)",
+            "example": 100
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "description": "Product status",
             "nullable": true,
-            "description": "User avatar URL",
-            "example": "https://example.com/avatars/user1.jpg"
+            "example": "active"
           },
-          "created_at": {
+          "image": {
             "type": "string",
-            "format": "date-time",
-            "description": "User creation timestamp",
-            "example": "2024-01-15T10:30:00Z"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "User last update timestamp",
-            "example": "2024-01-15T10:30:00Z"
+            "format": "binary",
+            "description": "Product image file (jpg, jpeg, png, max 1MB)",
+            "nullable": true
           }
         }
       },
@@ -656,15 +634,15 @@
             "description": "Product ID",
             "example": 1
           },
+          "user_id": {
+            "type": "integer",
+            "description": "User ID who created the product",
+            "example": 1
+          },
           "name": {
             "type": "string",
             "description": "Product name",
             "example": "Premium WordPress Theme"
-          },
-          "slug": {
-            "type": "string",
-            "description": "Product URL slug",
-            "example": "premium-wordpress-theme"
           },
           "description": {
             "type": "string",
@@ -672,285 +650,152 @@
             "example": "A beautiful and responsive WordPress theme for modern websites"
           },
           "price": {
-            "type": "number",
-            "format": "float",
+            "type": "integer",
             "description": "Product price",
-            "example": 59.99
+            "example": 59
           },
-          "category_id": {
+          "quantity": {
             "type": "integer",
-            "description": "Category ID",
-            "example": 1
+            "description": "Product quantity",
+            "example": 100
           },
-          "images": {
-            "type": "array",
-            "description": "Product images",
-            "items": {
-              "type": "string",
-              "format": "uri"
-            },
-            "example": [
-              "https://example.com/products/theme1-preview.jpg",
-              "https://example.com/products/theme1-detail.jpg"
-            ]
-          },
-          "rating": {
-            "type": "number",
-            "format": "float",
-            "description": "Average product rating",
-            "minimum": 0,
-            "maximum": 5,
-            "example": 4.5
-          },
-          "reviews_count": {
-            "type": "integer",
-            "description": "Number of reviews",
-            "example": 42
-          },
-          "downloads": {
-            "type": "integer",
-            "description": "Number of downloads",
-            "example": 1250
-          },
-          "version": {
+          "image_path": {
             "type": "string",
-            "description": "Product version",
-            "example": "1.2.0"
+            "nullable": true,
+            "description": "Product image storage path",
+            "example": "products/550e8400-e29b-41d4-a716-446655440000.jpg"
           },
-          "is_active": {
-            "type": "boolean",
-            "description": "Product active status",
-            "example": true
-          },
-          "created_at": {
+          "image_url": {
             "type": "string",
-            "format": "date-time",
-            "description": "Product creation timestamp",
-            "example": "2024-01-15T10:30:00Z"
+            "format": "uri",
+            "nullable": true,
+            "description": "Product image URL",
+            "example": "http://127.0.0.1:8000/storage/products/550e8400-e29b-41d4-a716-446655440000.jpg"
           },
-          "updated_at": {
+          "status": {
             "type": "string",
-            "format": "date-time",
-            "description": "Product last update timestamp",
-            "example": "2024-01-15T10:30:00Z"
+            "enum": ["active", "inactive"],
+            "description": "Product status",
+            "example": "active"
           }
         }
       },
-      "CreateProductRequest": {
+      "ProductResponse": {
         "type": "object",
-        "required": ["name", "description", "price"],
         "properties": {
-          "name": {
+          "message": {
             "type": "string",
-            "description": "Product name",
-            "minLength": 3,
-            "maxLength": 255,
-            "example": "Premium WordPress Theme"
+            "example": "Product created successfully"
           },
-          "description": {
-            "type": "string",
-            "description": "Product description",
-            "minLength": 10,
-            "example": "A beautiful and responsive WordPress theme for modern websites"
-          },
-          "price": {
-            "type": "number",
-            "format": "float",
-            "description": "Product price",
-            "minimum": 0,
-            "example": 59.99
-          },
-          "category_id": {
-            "type": "integer",
-            "description": "Category ID",
-            "example": 1
-          },
-          "images": {
-            "type": "array",
-            "description": "Product images URLs",
-            "items": {
-              "type": "string",
-              "format": "uri"
-            }
-          },
-          "version": {
-            "type": "string",
-            "description": "Product version",
-            "example": "1.0.0"
+          "data": {
+            "$ref": "#/components/schemas/Product"
           }
         }
       },
-      "UpdateProductRequest": {
+      "ProductListResponse": {
         "type": "object",
         "properties": {
-          "name": {
+          "message": {
             "type": "string",
-            "description": "Product name",
-            "minLength": 3,
-            "maxLength": 255,
-            "example": "Premium WordPress Theme"
+            "example": "Products retrieved successfully"
           },
-          "description": {
-            "type": "string",
-            "description": "Product description",
-            "minLength": 10,
-            "example": "A beautiful and responsive WordPress theme for modern websites"
-          },
-          "price": {
-            "type": "number",
-            "format": "float",
-            "description": "Product price",
-            "minimum": 0,
-            "example": 59.99
-          },
-          "category_id": {
-            "type": "integer",
-            "description": "Category ID",
-            "example": 1
-          },
-          "images": {
-            "type": "array",
-            "description": "Product images URLs",
-            "items": {
-              "type": "string",
-              "format": "uri"
-            }
-          },
-          "version": {
-            "type": "string",
-            "description": "Product version",
-            "example": "1.0.0"
-          },
-          "is_active": {
-            "type": "boolean",
-            "description": "Product active status",
-            "example": true
-          }
-        }
-      },
-      "ProductList": {
-        "type": "object",
-        "properties": {
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Product"
             }
-          },
-          "meta": {
-            "type": "object",
-            "properties": {
-              "current_page": {
-                "type": "integer",
-                "example": 1
-              },
-              "from": {
-                "type": "integer",
-                "example": 1
-              },
-              "last_page": {
-                "type": "integer",
-                "example": 10
-              },
-              "per_page": {
-                "type": "integer",
-                "example": 15
-              },
-              "to": {
-                "type": "integer",
-                "example": 15
-              },
-              "total": {
-                "type": "integer",
-                "example": 150
-              }
-            }
           }
         }
       },
-      "QrCode": {
+      "ProductDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Product deleted successfully"
+          },
+          "data": {
+            "type": "null",
+            "nullable": true
+          }
+        }
+      },
+      "ProductQrCode": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
-            "description": "QR code ID",
+            "description": "QR Code ID",
             "example": 1
           },
           "product_id": {
             "type": "integer",
-            "description": "Associated product ID",
+            "description": "Product ID",
             "example": 1
           },
-          "token": {
+          "qr_token": {
             "type": "string",
-            "description": "Unique QR code token",
-            "example": "abc123def456"
+            "format": "uuid",
+            "description": "QR code token (UUID)",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           },
-          "qr_code_url": {
+          "qr_image_path": {
+            "type": "string",
+            "description": "QR code image storage path",
+            "example": "products/qr/550e8400-e29b-41d4-a716-446655440000.png"
+          },
+          "qr_image_url": {
             "type": "string",
             "format": "uri",
-            "description": "URL to the QR code image",
-            "example": "https://example.com/qr-codes/abc123def456.png"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "QR code creation timestamp",
-            "example": "2024-01-15T10:30:00Z"
-          },
-          "expires_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "QR code expiration timestamp",
-            "example": "2025-01-15T10:30:00Z"
+            "description": "QR code image URL",
+            "example": "http://127.0.0.1:8000/storage/products/qr/550e8400-e29b-41d4-a716-446655440000.png"
           }
         }
       },
-      "QrCodeVerification": {
+      "QrCodeCreateResponse": {
         "type": "object",
         "properties": {
-          "valid": {
-            "type": "boolean",
-            "description": "Whether the QR code is valid",
-            "example": true
+          "message": {
+            "type": "string",
+            "example": "QR Code Generated Successfully."
           },
-          "product": {
+          "data": {
+            "$ref": "#/components/schemas/ProductQrCode"
+          }
+        }
+      },
+      "QrCodeVerificationResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "QR Code Verified Successfully."
+          },
+          "data": {
             "$ref": "#/components/schemas/Product"
-          },
-          "message": {
-            "type": "string",
-            "description": "Verification message",
-            "example": "QR code verified successfully"
-          },
-          "verified_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Verification timestamp",
-            "example": "2024-01-15T10:30:00Z"
           }
         }
       },
-      "Error": {
+      "ErrorResponse": {
         "type": "object",
         "properties": {
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "An error occurred"
-          },
           "errors": {
-            "type": "object",
-            "description": "Detailed validation errors",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "string"
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Simple error message"
+              },
+              {
+                "type": "object",
+                "description": "Validation errors object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
               }
-            },
-            "example": {
-              "email": ["The email field is required."]
-            }
+            ]
           }
         }
       }
