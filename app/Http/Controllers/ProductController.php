@@ -39,12 +39,12 @@ class ProductController extends Controller
             'quantity' => $data['quantity'],
         ]);
 
-
-        if($request->file('image')){
+        if($request->hasFile('image')){
             $file = $request->file('image');
             $fileName =Str::uuid() . "." . $file->getClientOriginalExtension();
             $path = $file->storeAs('products', $fileName, 'public');
             $product->image_path = $path;
+            $product->save();
         }
 
         return response()->json([
