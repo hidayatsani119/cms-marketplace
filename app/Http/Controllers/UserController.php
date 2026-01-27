@@ -26,12 +26,15 @@ class UserController extends Controller
         }
 
         //generate token uuid
-        $user->token = Str::uuid()->toString();
+        $token = Str::uuid()->toString();
+        $user->token = $token;
         $user->save();
 
         return response()->json([
             'message' => 'Login successful',
-            'data' => new UserResource($user),
+            'data' =>[
+                'token' => $token,
+            ],
         ],200);
 
     }
@@ -48,6 +51,8 @@ class UserController extends Controller
     public function logout(Request $request) :JsonResponse
     {
         $User = Auth::user();
+
+
         $User->token = null;
         $User->save();
 
@@ -55,5 +60,7 @@ class UserController extends Controller
             'message' => 'User logged out successfully.',
             'data' => null
         ],200);
+
+
     }
 }

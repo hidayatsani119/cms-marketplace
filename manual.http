@@ -1,12 +1,26 @@
-GET http://localhost:80/api/item?id=99
+###
+POST http://127.0.0.1:8000/api/users
+Content-Type: application/json
 Accept: application/json
+
+{
+    "email":"admin@mail.com",
+    "password":"password"
+}
+###
+
+###
+GET http://127.0.0.1:8000/api/users
+Content-Type: application/json
+Accept: application/json
+Authorization: a476be2f-3cfd-428c-958f-55046c03770c
+
+
+###
 
 ###
 DELETE http://127.0.0.1:8000/api/users
 Content-Type: application/json
 Accept: application/json
-Authorization: e545f08a-ab4b-4814-a5fc-de3e38c856e5
-
-
-
+Authorization: a476be2f-3cfd-428c-958f-55046c03770c
 ###

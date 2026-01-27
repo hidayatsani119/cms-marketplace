@@ -44,6 +44,8 @@ class UserTest extends TestCase
         $response->assertStatus(200)->assertJson([
             "message" => "Login successful",
         ]);
+        self::assertNotNull($response['data']['token']);
+
         dump($response->json());
     }
 
@@ -73,6 +75,10 @@ class UserTest extends TestCase
         dump($response->json());
         $response->assertStatus(200)->assertJson([
             "message" => "Get user success.",
+            'data' => [
+                'name' => 'admin',
+                'email' => 'admin@mail.com'
+            ]
         ]);
     }
 
