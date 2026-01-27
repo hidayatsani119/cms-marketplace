@@ -28,7 +28,6 @@ class ProductQrCodeTest extends TestCase
         $response->assertStatus(201)->assertJson([
             'message' => "QR Code Generated Successfully.",
         ]);
-        dump($response->json());
     }
 
     public function testVerifyProductQrCode()
@@ -44,13 +43,32 @@ class ProductQrCodeTest extends TestCase
         $qr = Product_qr_code::where('product_id', $product->id)->first();
 
         $response = $this->post("/api/qr/{$qr->qr_token}");
-        $response->assertStatus(200);
-        dump($qr->qr_token);
-        dump($response->json());
+        $response->assertStatus(200)->assertJson([
+            'message' => "QR Code Verified Successfully.",
+            'data' => [
+                'name' => 'test product',
+                'description' => 'test product',
+                'price' => 100,
+                'quantity' => 10,
+            ]
+        ]);
 
     }
+    public function testCreateProductQrCodeFailProductNotFound()
+    {
+        $this->seed(UserSeeder::class);
+        $this->seed(ProductSeeder::class);
+        $product = Product::where('name', 'test product')->first();
 
-    public function testVerifyProductQrCodeFails()
+        $response = $this->withHeader('Authorization','testToken')
+            ->post("/api/products/10/qr-code");
+
+        $response->assertStatus(404)->assertJson([
+            'errors' => "Product not found.",
+        ]);
+    }
+
+    public function testVerifyProductQrCodeFailQrProductNotFound()
     {
         $this->seed(UserSeeder::class);
         $this->seed(ProductSeeder::class);
@@ -70,4 +88,5 @@ class ProductQrCodeTest extends TestCase
             'errors' => "QR Code Not Found.",
         ]);
     }
+
 }

@@ -14,6 +14,7 @@ use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
+    //success test-case
     public function testCreateProduct()
     {
         $this->seed(UserSeeder::class);
@@ -34,7 +35,7 @@ class ProductTest extends TestCase
             "image_path" => null
             ]
          ]);
-        dump($response->json());
+
     }
 
     public  function testCreateProductWithImage()
@@ -65,14 +66,14 @@ class ProductTest extends TestCase
         ]);
         self::assertNotNull($response->json(['data'])['image_path']);
 
-        dump($response->json());
+
     }
 
     public function testgetAllProduct(){
         $this->seed(UserSeeder::class);
         $this->seed(ProductSeeder::class);
         $response = $this->get('/api/products');
-        dump($response->json());
+
         $response->assertStatus(200)->assertJson([
             "message" => "Products retrieved successfully",
         ]);
@@ -87,7 +88,7 @@ class ProductTest extends TestCase
 
         $product = Product::where('name', 'test product 2')->first();
         $response = $this->get("/api/products/{$product->id}");
-        dump($response->json());
+
 
         $response->assertStatus(200)->assertJson([
             "message" => "Product retrieved successfully",
@@ -116,7 +117,7 @@ class ProductTest extends TestCase
                 'quantity' => 20,
                 'status' => ProductStatusEnum::INACTIVE->value,
             ]);
-        dump($response->json());
+
 
         $response->assertStatus(200)->assertJson([
             "message" => "Product updated successfully",
@@ -152,7 +153,7 @@ class ProductTest extends TestCase
         ];
         $response = $this->withHeader('Authorization','testToken')
             ->put("/api/products/{$product->id}",$payload);
-        dump($response->json());
+
 
         $response->assertStatus(200)->assertJson([
             "message" => "Product updated successfully",
@@ -177,7 +178,7 @@ class ProductTest extends TestCase
 
         $response = $this->withHeader('Authorization','testToken')
             ->delete("/api/products/{$product->id}");
-        dump($response->json());
+
 
         $response->assertStatus(200)->assertJson([
             "message" => "Product deleted successfully",
@@ -185,4 +186,77 @@ class ProductTest extends TestCase
         ]);
 
     }
+
+    //fail test-case
+    public function testProductNotFound()
+    {
+        $this->seed(UserSeeder::class);
+        $this->get('/api/products')->assertStatus(404)->assertJson([
+            "errors" => "Product not found"
+        ]);
+
+        $this->seed(ProductSeeder::class);
+
+        $this->get("/api/products/10")->assertStatus(404)->assertJson([
+            "errors" => "Product not found"
+        ]);;
+    }
+
+    public function testCreateProductFailValidationError()
+    {
+        $this->seed(UserSeeder::class);
+        $response = $this->withHeader('Authorization','testToken')->post('/api/products', [
+            'name' => 'test product',
+            'description' => 'test product',
+            'price' => 0,
+            'quantity' => -1,
+        ]);
+
+        $response->assertStatus(400)->assertJson([
+            "errors" => [
+               'price' => [
+                   "The price field must be greater than 0."
+               ],
+                'quantity' => [
+                    'The quantity field must be greater than or equal to 0.'
+                ]
+            ]
+
+        ]);
+    }
+
+    public function testAllProtectedProductsEndpointFailAuthError()
+    {
+        $this->seed(UserSeeder::class);
+        $this->withHeader('Authorization','wrongToken')->post('/api/products', [
+            'name' => 'test product',
+            'description' => 'test product',
+            'price' => 100,
+            'quantity' => 10,
+        ])->assertStatus(401)->assertJson([
+            "errors" => "Unauthorized."
+        ]);
+
+
+        $this->seed(ProductSeeder::class);
+
+        $product = Product::where('name', 'test product 2')->first();
+        $this->withHeader('Authorization','wrongToken')
+            ->put("/api/products/{$product->id}",
+                [
+                    'name' => 'new test product 2',
+                    'description' => 'new test product 2',
+                    'price' => 200,
+                    'quantity' => 20,
+                    'status' => ProductStatusEnum::INACTIVE->value,
+                    ])->assertStatus(401)->assertJson([
+                        "errors" => "Unauthorized."
+            ]);
+
+        $this->withHeader('Authorization','wrongToken')
+            ->delete("/api/products/{$product->id}")->assertStatus(401)->assertJson([
+            "errors" => "Unauthorized."
+        ]);
+    }
 }
+

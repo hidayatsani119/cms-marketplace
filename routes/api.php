@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 //users public route
 Route::post('users', [UserController::class, 'login']);
 Route::post("qr/{qr_token}", [ProductQrCodeController::class, 'verify']);
@@ -25,7 +24,6 @@ Route::post("qr/{qr_token}", [ProductQrCodeController::class, 'verify']);
 //product public route
 Route::get('products', [ProductController::class, 'getAll']);
 Route::get("products/{product_id}", [ProductController::class, 'get']);
-
 
 Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(function () {
     //users

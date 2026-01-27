@@ -22,7 +22,6 @@ class UserTest extends TestCase
 
 
 
-        dump($response->json());
         $response->assertStatus(200)->assertJson([
             "message" => "User logged out successfully.",
             "data" => null
@@ -46,21 +45,24 @@ class UserTest extends TestCase
         ]);
         self::assertNotNull($response['data']['token']);
 
-        dump($response->json());
     }
 
-    public function testUserLoginFail()
+    public function testUserLoginFailEmailAndPassword()
     {
         $this->seed(UserSeeder::class);
-        $response = $this->post('/api/users', [
+        $this->post('/api/users', [
             'email' => 'wrong@mail.com',
             'password' => 'password',
-        ]);
-
-        $response->assertStatus(400)->assertJson([
+        ])->assertStatus(400)->assertJson([
             "errors" => "The provided credentials are incorrect."
         ]);
-        dump($response->json());
+
+        $this->post('/api/users', [
+            'email' => 'admin@mail.com',
+            'password' => 'wrongpassword',
+        ])->assertStatus(400)->assertJson([
+            "errors" => "The provided credentials are incorrect."
+        ]);
     }
 
     public function testUserGet()
@@ -72,7 +74,6 @@ class UserTest extends TestCase
             'Authorization' => 'testToken',
         ]);
 
-        dump($response->json());
         $response->assertStatus(200)->assertJson([
             "message" => "Get user success.",
             'data' => [
@@ -82,5 +83,15 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function testAllProtectedUsersEndpointFailAuthError()
+    {
+        $this->seed(UserSeeder::class);
+        $this->withHeader('Authorization','wrongToken')->get('/api/users')
+            ->assertStatus(401)
+            ->assertJson(["errors" => "Unauthorized."]);
 
+        $this->withHeader('Authorization','wrongToken')->delete('/api/users')
+            ->assertStatus(401)
+            ->assertJson(["errors" => "Unauthorized."]);;
+    }
 }

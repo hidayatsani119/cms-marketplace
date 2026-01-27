@@ -24,7 +24,7 @@ class ProductQrCodeController extends Controller
 
         if (!$product) {
             throw new HttpResponseException(response()->json([
-                'errors' => 'Product not found',
+                'errors' => 'Product not found.',
             ],404));
         }
 

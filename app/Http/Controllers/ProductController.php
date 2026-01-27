@@ -19,7 +19,7 @@ class ProductController extends Controller
         $product = Product::where('id', $product_id)->first();
         if(!$product){
             throw new HttpResponseException(response()->json([
-                'error' => 'Product not found',
+                'errors' => 'Product not found',
 
             ],404));
         }
@@ -58,7 +58,7 @@ class ProductController extends Controller
         $products = Product::all();
         if($products->isEmpty()){
             throw new HttpResponseException(response()->json([
-                'error' => 'Product not found',
+                'errors' => 'Product not found',
 
             ],404));
         }
