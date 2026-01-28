@@ -343,6 +343,53 @@
         }
       }
     },
+    "/products/search/": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Search products",
+        "description": "Search and filter products by name with optional price ordering (public endpoint). Returns paginated results.",
+        "operationId": "searchProducts",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Filter products by name (partial match)",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "example": "WordPress"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "Order products by price",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            },
+            "example": "asc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductSearchResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/products/{product_id}/qr-code": {
       "post": {
         "tags": ["QR Codes"],
@@ -390,9 +437,9 @@
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
-        "scheme": "bearer",
+        "scheme": "token",
         "bearerFormat": "UUID",
-        "description": "JWT Bearer token authentication. Include the token in the Authorization header as: `Authorization: Bearer {token}`. The token is a UUID string returned from the login endpoint (/users POST). Example: `Authorization: Bearer 550e8400-e29b-41d4-a716-446655440000`"
+        "description": "token authentication. Include the token in the Authorization header as: `Authorization: {token}`. The token is a UUID string returned from the login endpoint (/users POST). Example: `Authorization: 550e8400-e29b-41d4-a716-446655440000`"
       }
     },
     "responses": {
@@ -703,6 +750,46 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      },
+      "ProductSearchResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Products retrieved successfully"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "description": "Total number of products",
+                "example": 50
+              },
+              "per_page": {
+                "type": "integer",
+                "description": "Number of products per page",
+                "example": 10
+              },
+              "current_page": {
+                "type": "integer",
+                "description": "Current page number",
+                "example": 1
+              },
+              "last_page": {
+                "type": "integer",
+                "description": "Last page number",
+                "example": 5
+              }
             }
           }
         }
