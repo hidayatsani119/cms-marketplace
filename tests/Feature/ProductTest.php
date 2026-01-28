@@ -239,7 +239,7 @@ class ProductTest extends TestCase
                 "price" => 100,
                 "quantity" => 10,
                 "image_path" => null,
-                "image_url" => "http://localhost/storage/",
+                "image_url" => "http://localhost:8000/storage/",
                 "status" => "active",]
             ]
         ]);

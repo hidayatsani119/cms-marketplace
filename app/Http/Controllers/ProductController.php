@@ -120,7 +120,6 @@ class ProductController extends Controller
          ],200);
     }
 
-
     public function search(ProductSearchRequest $request) :JsonResponse
     {
         $data = $request->validated();

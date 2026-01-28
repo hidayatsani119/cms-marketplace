@@ -29,7 +29,7 @@ class ProductQrCodeController extends Controller
         }
 
         $qr_token = Str::uuid()->toString();
-        $qrUrl = 'http://127.0.0.1:8000/' . 'verify/' . $qr_token;
+        $qrUrl = 'http://clienturl/' . 'qr/' . $qr_token;
         $filePath = 'products/qr/' . $qr_token . '.png';
 
         $qrImage = QrCode::format('png')->size( 400)->generate($qrUrl);
@@ -53,18 +53,18 @@ class ProductQrCodeController extends Controller
         $id_product = Product_qr_code::where('qr_token', $qr_token)->select('product_id')->first();
         if (!$id_product) {
             throw new HttpResponseException(response()->json([
-                'errors' => 'QR Code Not Found.',
+                'errors' => 'This product is fake.',
             ],404));
         }
         $product = Product::where('id', $id_product->product_id)->first();
 
         if (!$product) {
             throw new HttpResponseException(response()->json([
-                'errors' => 'QR Code Not Found.',
+                'errors' => 'This product is fake.',
             ],404));
         }
         return response()->json([
-            'message' => 'QR Code Verified Successfully.',
+            'message' => 'This product is original.',
             'data' => new ProductResource($product),
         ]);
 

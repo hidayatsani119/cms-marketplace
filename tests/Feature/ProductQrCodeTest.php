@@ -44,7 +44,7 @@ class ProductQrCodeTest extends TestCase
 
         $response = $this->post("/api/qr/{$qr->qr_token}");
         $response->assertStatus(200)->assertJson([
-            'message' => "QR Code Verified Successfully.",
+            'message' => "This product is original.",
             'data' => [
                 'name' => 'test product',
                 'description' => 'test product',
@@ -86,7 +86,7 @@ class ProductQrCodeTest extends TestCase
 
 
         $response->assertStatus(404)->assertJson([
-            'errors' => "QR Code Not Found.",
+            'errors' => "This product is fake.",
         ]);
     }
 
