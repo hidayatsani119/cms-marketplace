@@ -132,14 +132,26 @@ class ProductController extends Controller
         }
         if(isset($data['order']))
         {
-            if($data['order'] == 'asc'){
-                $query->orderBy('price', 'asc');
+            if($data['order'] == 'latest'){
+                $query->orderBy('id', 'asc');
             } else {
-                $query->orderBy('price', 'desc');
+                $query->orderBy( 'id','desc');
+            }
+        }
+        if(isset($data['price']))
+        {
+            if($data['price'] == 'lowest'){
+                $query->orderBy('price' ,'asc');
+            } else {
+                $query->orderBy( 'price','desc');
             }
         }
 
-        $products = $query->paginate(10);
+        $perPage = 10;
+        if (isset($data['perPage'])) {
+            $perPage = $data['perPage'];
+        }
+        $products = $query->paginate($perPage);
 
 
         if($products->isEmpty()){

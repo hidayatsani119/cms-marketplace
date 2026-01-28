@@ -188,25 +188,40 @@ class ProductTest extends TestCase
 
     }
 
-    public function testSearchProductOrderBy()
+    public function testSearchProductOrderByPrice()
     {
         $this->seed(UserSeeder::class);
         $this->seed(ProductSeeder::class);
 
-        $responseDesc = $this->get('/api/products/search?order=desc')->assertStatus(200)->assertJson([
+         $responseHighest = $this->get('/api/products/search?price=highest')->assertStatus(200)->assertJson([
             "message" => "Products retrieved successfully",
         ]);
 
-        assertEquals(200, $responseDesc->json()['data'][0]['price']);
-        assertEquals(100, $responseDesc->json()['data'][1]['price']);
+        assertEquals(200, $responseHighest->json()['data'][0]['price']);
+        assertEquals(100, $responseHighest->json()['data'][1]['price']);
 
-        $responseAsc = $this->get('/api/products/search?order=asc')->assertStatus(200)->assertJson([
+        $responseLowest = $this->get('/api/products/search?price=lowest')->assertStatus(200)->assertJson([
             "message" => "Products retrieved successfully",
         ]);
-        assertEquals(100, $responseAsc->json()['data'][0]['price']);
-        assertEquals(200, $responseAsc->json()['data'][1]['price']);
+        assertEquals(100, $responseLowest->json()['data'][0]['price']);
+        assertEquals(200, $responseLowest->json()['data'][1]['price']);
     }
+    public function testSearchProductOrderByNewestAndOldest()
+    {
+        $this->seed(UserSeeder::class);
+        $this->seed(ProductSeeder::class);
 
+       $responseLatest = $this->get('/api/products/search?order=latest')->assertStatus(200)->assertJson([
+           "message" => "Products retrieved successfully",
+       ]);
+
+        $responseNewest = $this->get('/api/products/search?order=newest')->assertStatus(200)->assertJson([
+            "message" => "Products retrieved successfully",
+        ]);
+
+        self::assertLessThan($responseLatest->json()['data'][1]['id'] ,$responseLatest->json()['data'][0]['id']);
+        self::assertGreaterThan($responseNewest->json()['data'][1]['id'] ,$responseNewest->json()['data'][0]['id']);
+    }
     public function testSearchProductName()
     {
         $this->seed(UserSeeder::class);
