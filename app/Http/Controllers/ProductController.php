@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductCreateRequest;
+use App\Http\Requests\ProductSearchRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -117,5 +118,46 @@ class ProductController extends Controller
              'message' => 'Product deleted successfully',
              'data' => null
          ],200);
+    }
+
+
+    public function search(ProductSearchRequest $request) :JsonResponse
+    {
+        $data = $request->validated();
+
+        $query = Product::query();
+
+        if(isset($data['name'])){
+            $query->where('name', 'like', '%'.$data['name'].'%');
+        }
+        if(isset($data['order']))
+        {
+            if($data['order'] == 'asc'){
+                $query->orderBy('price', 'asc');
+            } else {
+                $query->orderBy('price', 'desc');
+            }
+        }
+
+        $products = $query->paginate(10);
+
+
+        if($products->isEmpty()){
+            throw new HttpResponseException(response()->json([
+                'errors' => 'Product not found',
+                'data' => null
+            ],404));
+        }
+
+        return response()->json([
+            'message' => 'Products retrieved successfully',
+            'data' => ProductResource::collection($products),
+            'pagination' => [
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+            ]
+        ]);
     }
 }

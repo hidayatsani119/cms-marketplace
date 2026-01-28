@@ -22,6 +22,7 @@ Route::post("qr/{qr_token}", [ProductQrCodeController::class, 'verify']);
 
 //product public route
 Route::get('products', [ProductController::class, 'getAll']);
+Route::get('products/search/', [ProductController::class, 'search']);
 Route::get("products/{product_id}", [ProductController::class, 'get']);
 
 Route::middleware(\App\Http\Middleware\ApiAuthMiddleware::class)->group(callback: function () {

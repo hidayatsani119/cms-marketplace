@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
             'user_id' => $user->id,
             'name' => 'test product',
             'description' => 'test product',
-            'price' => 100,
+            'price' => 200,
             'quantity' => 10,
         ]);
 
@@ -31,5 +31,7 @@ class ProductSeeder extends Seeder
             'price' => 100,
             'quantity' => 10,
         ]);
+
     }
+
 }

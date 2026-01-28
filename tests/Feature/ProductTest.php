@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use function PHPUnit\Framework\assertEquals;
 
 class ProductTest extends TestCase
 {
@@ -187,6 +188,50 @@ class ProductTest extends TestCase
 
     }
 
+    public function testSearchProductOrderBy()
+    {
+        $this->seed(UserSeeder::class);
+        $this->seed(ProductSeeder::class);
+
+        $responseDesc = $this->get('/api/products/search?order=desc')->assertStatus(200)->assertJson([
+            "message" => "Products retrieved successfully",
+        ]);
+
+        assertEquals(200, $responseDesc->json()['data'][0]['price']);
+        assertEquals(100, $responseDesc->json()['data'][1]['price']);
+
+        $responseAsc = $this->get('/api/products/search?order=asc')->assertStatus(200)->assertJson([
+            "message" => "Products retrieved successfully",
+        ]);
+        assertEquals(100, $responseAsc->json()['data'][0]['price']);
+        assertEquals(200, $responseAsc->json()['data'][1]['price']);
+    }
+
+    public function testSearchProductName()
+    {
+        $this->seed(UserSeeder::class);
+        $this->seed(ProductSeeder::class);
+
+        $response = $this->get('/api/products/search?name=test product 2')->assertStatus(200)->assertJson([
+            "message" => "Products retrieved successfully",
+        ]);
+
+        $response->assertStatus(200)->assertJson([
+            "message" => "Products retrieved successfully",
+            "data" => [
+              [  "name" => "test product 2",
+                "description" => "test product 2",
+                "price" => 100,
+                "quantity" => 10,
+                "image_path" => null,
+                "image_url" => "http://localhost/storage/",
+                "status" => "active",]
+            ]
+        ]);
+
+
+    }
+
     //fail test-case
     public function testProductNotFound()
     {
@@ -257,6 +302,17 @@ class ProductTest extends TestCase
             ->delete("/api/products/{$product->id}")->assertStatus(401)->assertJson([
             "errors" => "Unauthorized."
         ]);
+    }
+
+    public function testProductTestFailProductNotFound()
+    {
+        $this->seed(UserSeeder::class);
+        $this->seed(ProductSeeder::class);
+        $this->get('/api/products/search?name=bla bla bla')->assertStatus(404)->assertJson([
+            "errors" => "Product not found"
+        ]);
+
+
     }
 }
 

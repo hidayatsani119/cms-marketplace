@@ -48,12 +48,13 @@ class ProductQrCodeTest extends TestCase
             'data' => [
                 'name' => 'test product',
                 'description' => 'test product',
-                'price' => 100,
+                'price' => 200,
                 'quantity' => 10,
             ]
         ]);
 
     }
+
     public function testCreateProductQrCodeFailProductNotFound()
     {
         $this->seed(UserSeeder::class);
