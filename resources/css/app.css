@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* The Body Shop Color Palette */
+:root {
+    /* Primary Green */
+    --color-primary: #004d2c;
+    --color-primary-light: #006b3d;
+    --color-primary-dark: #003d23;
+    
+    /* Beige/Cream tones - Body Shop style */
+    --color-beige-50: #fdfcfa;
+    --color-beige-100: #f8f6f1;
+    --color-beige-200: #f0ece3;
+    --color-beige-300: #e5dfd2;
+    --color-beige-400: #d4cbb8;
+    
+    /* Neutral */
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-700: #404040;
+    --color-neutral-800: #262626;
+    --color-neutral-900: #171717;
+}
+
+/* Base Styles */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #262626;
+    background-color: #f8f6f1;
+}
+
+/* Headings */
+h1, h2, h3, .heading {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* Button Styles */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+    background-color: #004d2c;
+    color: white;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: #003d23;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+    background-color: transparent;
+    color: #004d2c;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid #004d2c;
+    transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+    background-color: #004d2c;
+    color: white;
+}
+
+.btn-white {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+    background-color: white;
+    color: #004d2c;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+.btn-white:hover {
+    background-color: #f8f6f1;
+}
+
+/* Product Card Style */
+.product-card {
+    background: white;
+    transition: all 0.3s ease;
+}
+.product-card:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-image {
+    overflow: hidden;
+    background: #f0ece3;
+}
+.product-image img {
+    transition: transform 0.5s ease;
+}
+
+/* Input Styles */
+.input-field {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background-color: #262626;
+    border: 1px solid #404040;
+    color: white;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+.input-field::placeholder {
+    color: #737373;
+}
+.input-field:focus {
+    outline: none;
+    border-color: #004d2c;
+}
+
+.input-light {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background-color: white;
+    border: 1px solid #e5dfd2;
+    color: #262626;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+.input-light::placeholder {
+    color: #a3a3a3;
+}
+.input-light:focus {
+    outline: none;
+    border-color: #004d2c;
+}
+
+/* Sidebar Styles - Admin */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    color: #a3a3a3;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+.sidebar-link.active {
+    background-color: rgba(0, 77, 44, 0.2);
+    color: #4ade80;
+    border-left: 3px solid #004d2c;
+}
+
+/* Badge */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.badge-green {
+    background-color: #dcfce7;
+    color: #004d2c;
+}
+.badge-red {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+/* Animations */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Utility Classes */
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+/* QR Scanner Styles */
+.scanner-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    background: #000;
+    overflow: hidden;
+}
+.scanner-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.scanner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.scanner-frame {
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+.scanner-frame::before,
+.scanner-frame::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-color: #4ade80;
+    border-style: solid;
+}
+.scanner-frame::before {
+    top: -2px;
+    left: -2px;
+    border-width: 3px 0 0 3px;
+}
+.scanner-frame::after {
+    bottom: -2px;
+    right: -2px;
+    border-width: 0 3px 3px 0;
+}

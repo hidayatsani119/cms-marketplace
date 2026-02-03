@@ -89,5 +89,4 @@ class ProductQrCodeTest extends TestCase
             'errors' => "This product is fake.",
         ]);
     }
-
 }

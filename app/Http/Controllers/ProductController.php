@@ -127,7 +127,7 @@ class ProductController extends Controller
         $query = Product::query();
 
         if(isset($data['name'])){
-            $query->where('name', 'like', '%'.$data['name'].'%');
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($data['name']) . '%']);
         }
         if(isset($data['order']))
         {
@@ -168,6 +168,7 @@ class ProductController extends Controller
                 'per_page' => $products->perPage(),
                 'current_page' => $products->currentPage(),
                 'last_page' => $products->lastPage(),
+                'total_product' => $products->total(),
             ]
         ]);
     }

@@ -15,6 +15,7 @@ class User extends Model implements Authenticatable
     public $timestamps = true;
     public $incrementing = true;
     protected $fillable = [
+        'name',
         'email',
         'password',
     ];
@@ -27,12 +28,12 @@ class User extends Model implements Authenticatable
 
     public function getAuthIdentifierName()
     {
-        return 'email';
+        return 'id';
     }
 
     public function getAuthIdentifier()
     {
-        return $this->email;
+        return $this->id;
     }
 
     public function getAuthPassword()
