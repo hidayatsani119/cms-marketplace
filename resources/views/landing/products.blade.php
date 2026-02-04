@@ -25,20 +25,37 @@
                     >
                     <button type="submit" class="btn-primary">Search</button>
                 </div>
-                <div class="flex items-center justify-center gap-6 mt-4">
-                    <span class="text-sm text-neutral-500">Sort:</span>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="price" value="" class="text-[#004d2c]" checked>
-                        <span class="text-sm text-neutral-600">Default</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="price" value="lowest" class="text-[#004d2c]">
-                        <span class="text-sm text-neutral-600">Price ↑</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="price" value="highest" class="text-[#004d2c]">
-                        <span class="text-sm text-neutral-600">Price ↓</span>
-                    </label>
+                <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-neutral-500">Sort:</span>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="order" value="" class="text-[#004d2c]" checked>
+                            <span class="text-sm text-neutral-600">Default</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="order" value="newest" class="text-[#004d2c]">
+                            <span class="text-sm text-neutral-600">Newest</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="order" value="latest" class="text-[#004d2c]">
+                            <span class="text-sm text-neutral-600">Oldest</span>
+                        </label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-neutral-500">Price:</span>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="price" value="" class="text-[#004d2c]" checked>
+                            <span class="text-sm text-neutral-600">Any</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="price" value="lowest" class="text-[#004d2c]">
+                            <span class="text-sm text-neutral-600">Low → High</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="price" value="highest" class="text-[#004d2c]">
+                            <span class="text-sm text-neutral-600">High → Low</span>
+                        </label>
+                    </div>
                 </div>
             </form>
             
@@ -181,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         return {
             name: formData.get('name'),
+            order: formData.get('order'),
             price: formData.get('price'),
             category_id: selectedCategory
         };

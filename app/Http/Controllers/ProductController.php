@@ -134,19 +134,19 @@ class ProductController extends Controller
         if(isset($data['category_id'])){
             $query->where('category_id', $data['category_id']);
         }
-        if(isset($data['order']))
+        if(!empty($data['order']))
         {
-            if($data['order'] == 'latest'){
-                $query->orderBy('id', 'asc');
-            } else {
+            if($data['order'] == 'newest'){
                 $query->orderBy('id', 'desc');
+            } else if($data['order'] == 'latest') {
+                $query->orderBy('id', 'asc');
             }
         }
-        if(isset($data['price']))
+        if(!empty($data['price']))
         {
             if($data['price'] == 'lowest'){
                 $query->orderBy('price', 'asc');
-            } else {
+            } else if($data['price'] == 'highest') {
                 $query->orderBy('price', 'desc');
             }
         }
