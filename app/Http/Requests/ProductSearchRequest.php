@@ -25,10 +25,11 @@ class ProductSearchRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string', 'max:100'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'price' => ['nullable', 'in:lowest,highest'],
             'order' => ['nullable', 'in:newest,latest'],
             'perPage' => ['nullable', 'integer'],
-            'page' => ['nullable', 'integer','min:1'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ];
     }
 

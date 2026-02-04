@@ -25,7 +25,7 @@
             </div>
             <div class="slide absolute inset-0 opacity-0 transition-opacity duration-700">
                 <div class="absolute inset-0"></div>
-                <img src="https://images.unsplash.com/photo-1614859278743-2a95e7d1e834?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Beauty Products" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1651740895757-b014896022a9?q=80&w=2961&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Beauty Products" class="w-full h-full object-cover">
                 <div class="absolute inset-0 flex items-center">
                     <div class="container mx-auto px-6">
                         <div class="max-w-xl text-white">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::with('category');
 
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -23,19 +24,26 @@ class ProductController extends Controller
             $query->where('status', $request->status);
         }
 
-        $products = $query->latest()->paginate(10);
+        if ($request->has('category') && $request->category) {
+            $query->where('category_id', $request->category);
+        }
 
-        return view('admin.products.index', compact('products'));
+        $products = $query->latest()->paginate(10);
+        $categories = Category::all();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create()
     {
-        return view('admin.products.create');
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:100',
             'description' => 'required|string',
             'price' => 'required|integer|min:1',
@@ -58,12 +66,14 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('admin.products.edit', compact('product'));
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:100',
             'description' => 'required|string',
             'price' => 'required|integer|min:1',
@@ -97,3 +107,4 @@ class ProductController extends Controller
         return $image->storeAs('products', $filename, 'public');
     }
 }
+

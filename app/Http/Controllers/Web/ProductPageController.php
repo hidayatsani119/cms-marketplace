@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 
 class ProductPageController extends Controller
 {
     public function index()
     {
-        return view('landing.products');
+        $categories = Category::orderBy('name')->get();
+        return view('landing.products', compact('categories'));
     }
 
     public function show(int $id)
     {
-        $product = Product::find($id);
+        $product = Product::with('category')->find($id);
         
         if (!$product) {
             return redirect('/products')->with('error', 'Product not found');
@@ -23,3 +25,4 @@ class ProductPageController extends Controller
         return view('landing.product-detail', compact('product'));
     }
 }
+

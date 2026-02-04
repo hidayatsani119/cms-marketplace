@@ -8,9 +8,9 @@
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-8">
-                <a href="{{ url('/') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider uppercase {{ request()->is('/') ? 'text-[#004d2c]' : '' }}">Home</a>
-                <a href="{{ url('/products') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider uppercase {{ request()->is('products*') ? 'text-[#004d2c]' : '' }}">Shop</a>
-                <a href="{{ url('/verify') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider uppercase {{ request()->is('verify*') ? 'text-[#004d2c]' : '' }}">Verify</a>
+                <a href="{{ url('/') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('/') ? 'text-[#004d2c] uppercase' : '' }}">Home</a>
+                <a href="{{ url('/products') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('products*') ? 'text-[#004d2c] uppercase' : '' }}">Shop</a>
+                <a href="{{ url('/verify') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('verify*') ? 'text-[#004d2c] uppercase' : '' }}">Verify</a>
             </div>
 
             <!-- Mobile Menu Button -->

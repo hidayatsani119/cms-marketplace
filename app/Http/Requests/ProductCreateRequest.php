@@ -27,11 +27,12 @@ class ProductCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string','required','max:100'],
-            'description' => ['string','required'],
-            'price' => ['int','gt:0','required'],
-            'quantity' =>['int','gte:0','required'],
-            'image' => ['file','mimes:jpg,jpeg,png','max:1024','nullable'],
+            'category_id' => ['int', 'required', 'exists:categories,id'],
+            'name' => ['string', 'required', 'max:100'],
+            'description' => ['string', 'required'],
+            'price' => ['int', 'gt:0', 'required'],
+            'quantity' => ['int', 'gte:0', 'required'],
+            'image' => ['file', 'mimes:jpg,jpeg,png', 'max:1024', 'nullable'],
             'status' => [Rule::enum(ProductStatusEnum::class), 'nullable'],
         ];
     }

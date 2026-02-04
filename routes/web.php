@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductPageController;
 use App\Http\Controllers\Web\QrVerificationController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\QrCodeController;
@@ -33,6 +34,16 @@ Route::prefix('admin')->group(function () {
     // Protected routes
     Route::middleware(\App\Http\Middleware\AdminAuth::class)->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+        
+        // Categories
+        Route::resource('categories', CategoryController::class)->names([
+            'index' => 'admin.categories.index',
+            'create' => 'admin.categories.create',
+            'store' => 'admin.categories.store',
+            'edit' => 'admin.categories.edit',
+            'update' => 'admin.categories.update',
+            'destroy' => 'admin.categories.destroy',
+        ]);
         
         // Products
         Route::resource('products', AdminProductController::class)->names([

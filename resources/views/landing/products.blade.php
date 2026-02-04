@@ -41,6 +41,18 @@
                     </label>
                 </div>
             </form>
+            
+            <!-- Category Filter -->
+            <div class="flex flex-wrap justify-center gap-2 mt-6">
+                <button type="button" data-category="" class="category-btn px-4 py-2 text-sm border-2 border-[#004d2c] text-[#004d2c] font-medium transition-colors">
+                    All
+                </button>
+                @foreach($categories as $category)
+                    <button type="button" data-category="{{ $category->id }}" class="category-btn px-4 py-2 text-sm border border-[#e5dfd2] text-neutral-600 hover:border-[#004d2c] hover:text-[#004d2c] transition-colors">
+                        {{ $category->name }}
+                    </button>
+                @endforeach
+            </div>
         </div>
         
         <!-- Products Grid -->
@@ -62,8 +74,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const grid = document.getElementById('products-grid');
     const pagination = document.getElementById('pagination');
     const form = document.getElementById('search-form');
+    const categoryBtns = document.querySelectorAll('.category-btn');
     let currentPage = 1;
     let currentParams = {};
+    let selectedCategory = '';
+    
+    function updateCategoryButtons() {
+        categoryBtns.forEach(btn => {
+            const cat = btn.dataset.category;
+            if (cat === selectedCategory) {
+                btn.classList.add('border-[#004d2c]', 'text-[#004d2c]', 'font-medium', 'border-2');
+                btn.classList.remove('text-neutral-600', 'border-[#e5dfd2]', 'border');
+            } else {
+                btn.classList.remove('border-[#004d2c]', 'text-[#004d2c]', 'font-medium', 'border-2');
+                btn.classList.add('text-neutral-600', 'border-[#e5dfd2]', 'border');
+            }
+        });
+    }
     
     function loadProducts(params = {}, page = 1) {
         currentParams = params;
@@ -102,13 +129,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         </div>
                         <div class="p-4 text-center">
+                            <p class="text-xs text-[#004d2c] mb-1">${p.category || ''}</p>
                             <h3 class="text-sm font-medium text-neutral-900 mb-1 line-clamp-2">${p.name}</h3>
                             <p class="text-sm font-semibold text-[#004d2c]">Rp ${new Intl.NumberFormat('id-ID').format(p.price)}</p>
                         </div>
                     </a>
                 `).join('');
                 
-                // Render pagination
                 if (data.pagination && data.pagination.last_page > 1) {
                     renderPagination(data.pagination);
                 } else {
@@ -125,10 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const { current_page, last_page } = pag;
         let html = '';
         
-        // Previous button
         html += `<button onclick="goToPage(${current_page - 1})" ${current_page === 1 ? 'disabled' : ''} class="px-4 py-2 border border-[#e5dfd2] ${current_page === 1 ? 'text-neutral-300 cursor-not-allowed' : 'text-neutral-600 hover:border-[#004d2c] hover:text-[#004d2c]'}">←</button>`;
         
-        // Page numbers
         const startPage = Math.max(1, current_page - 2);
         const endPage = Math.min(last_page, current_page + 2);
         
@@ -147,13 +172,20 @@ document.addEventListener('DOMContentLoaded', function() {
             html += `<button onclick="goToPage(${last_page})" class="px-4 py-2 border border-[#e5dfd2] text-neutral-600 hover:border-[#004d2c] hover:text-[#004d2c]">${last_page}</button>`;
         }
         
-        // Next button
         html += `<button onclick="goToPage(${current_page + 1})" ${current_page === last_page ? 'disabled' : ''} class="px-4 py-2 border border-[#e5dfd2] ${current_page === last_page ? 'text-neutral-300 cursor-not-allowed' : 'text-neutral-600 hover:border-[#004d2c] hover:text-[#004d2c]'}">→</button>`;
         
         pagination.innerHTML = html;
     }
     
-    // Global function for pagination buttons
+    function getParams() {
+        const formData = new FormData(form);
+        return {
+            name: formData.get('name'),
+            price: formData.get('price'),
+            category_id: selectedCategory
+        };
+    }
+    
     window.goToPage = function(page) {
         loadProducts(currentParams, page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -161,14 +193,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(form);
-        loadProducts({ name: formData.get('name'), price: formData.get('price') }, 1);
+        loadProducts(getParams(), 1);
     });
     
     form.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const formData = new FormData(form);
-            loadProducts({ name: formData.get('name'), price: formData.get('price') }, 1);
+        radio.addEventListener('change', () => loadProducts(getParams(), 1));
+    });
+    
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            selectedCategory = this.dataset.category;
+            updateCategoryButtons();
+            loadProducts(getParams(), 1);
         });
     });
     
@@ -176,3 +212,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
+

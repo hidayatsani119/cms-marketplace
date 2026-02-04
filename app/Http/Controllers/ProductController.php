@@ -34,6 +34,7 @@ class ProductController extends Controller
 
         $product = Product::create([
             'user_id' => $user->id,
+            'category_id' => $data['category_id'],
             'name' => $data['name'],
             'description' => $data['description'],
             'price' => $data['price'],
@@ -88,6 +89,7 @@ class ProductController extends Controller
         $product = $this->checkProductExists($product_id);
 
         $product->update([
+            'category_id' => $data['category_id'],
             'name' => $data['name'],
             'description' => $data['description'],
             'price' => $data['price'],
@@ -129,20 +131,23 @@ class ProductController extends Controller
         if(isset($data['name'])){
             $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($data['name']) . '%']);
         }
+        if(isset($data['category_id'])){
+            $query->where('category_id', $data['category_id']);
+        }
         if(isset($data['order']))
         {
             if($data['order'] == 'latest'){
                 $query->orderBy('id', 'asc');
             } else {
-                $query->orderBy( 'id','desc');
+                $query->orderBy('id', 'desc');
             }
         }
         if(isset($data['price']))
         {
             if($data['price'] == 'lowest'){
-                $query->orderBy('price' ,'asc');
+                $query->orderBy('price', 'asc');
             } else {
-                $query->orderBy( 'price','desc');
+                $query->orderBy('price', 'desc');
             }
         }
 

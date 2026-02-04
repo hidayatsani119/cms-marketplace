@@ -18,6 +18,7 @@ class Product extends Model
     public $timestamps = true;
     protected $fillable = [
         'user_id',
+        'category_id',
         'name',
         'description',
         'price',
@@ -43,16 +44,19 @@ class Product extends Model
         });
     }
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function product_qr_code(): HasOne
     {
         return $this->hasOne(Product_qr_code::class);
     }
-
 }
 

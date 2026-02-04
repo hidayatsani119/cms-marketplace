@@ -15,6 +15,22 @@
                 @method('PUT')
                 
                 <div class="space-y-5">
+                    <!-- Category -->
+                    <div>
+                        <label for="category_id" class="block text-xs font-medium text-neutral-500 uppercase tracking-widest mb-2">Category *</label>
+                        <select id="category_id" name="category_id" class="w-full px-4 py-3 bg-white border border-[#e5dfd2] focus:outline-none focus:border-[#004d2c]" required>
+                            <option value="">Select a category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
                     <!-- Name -->
                     <div>
                         <label for="name" class="block text-xs font-medium text-neutral-500 uppercase tracking-widest mb-2">Product Name</label>

@@ -30,7 +30,18 @@
                     <p class="text-neutral-400 text-sm">Click button below to start scanning</p>
                 </div>
                 
-                <div class="flex justify-center">
+                <!-- Camera Selection -->
+                <div class="flex flex-col items-center gap-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <label for="camera-select" class="text-sm text-neutral-600">Camera:</label>
+                        <select id="camera-select" class="px-4 py-2 bg-white border border-[#e5dfd2] text-neutral-900 text-sm focus:outline-none focus:border-[#004d2c] cursor-pointer">
+                            <option value="environment">Back Camera</option>
+                            <option value="user">Front Camera</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center gap-3">
                     <button id="start-scanner" class="btn-primary">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -41,6 +52,13 @@
                     
                     <button id="stop-scanner" class="btn-secondary" style="display: none;">
                         Stop Camera
+                    </button>
+                    
+                    <button id="switch-camera" class="btn-secondary" style="display: none;">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Switch Camera
                     </button>
                 </div>
                 
@@ -82,6 +100,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const startBtn = document.getElementById('start-scanner');
     const stopBtn = document.getElementById('stop-scanner');
+    const switchBtn = document.getElementById('switch-camera');
+    const cameraSelect = document.getElementById('camera-select');
     const placeholder = document.getElementById('scanner-placeholder');
     const readerDiv = document.getElementById('reader');
     const form = document.getElementById('verify-form');
@@ -91,9 +111,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let html5QrCode = null;
     let isScanning = false;
+    let currentFacingMode = 'environment';
     
-    startBtn.addEventListener('click', async function() {
+    async function startScanner(facingMode) {
         cameraError.classList.add('hidden');
+        currentFacingMode = facingMode;
         
         try {
             const devices = await Html5Qrcode.getCameras();
@@ -104,7 +126,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 placeholder.style.display = 'none';
                 readerDiv.style.display = 'block';
                 startBtn.style.display = 'none';
+                cameraSelect.disabled = true;
                 stopBtn.style.display = 'inline-flex';
+                switchBtn.style.display = 'inline-flex';
                 
                 const config = {
                     fps: 10,
@@ -113,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 await html5QrCode.start(
-                    { facingMode: "environment" },
+                    { facingMode: facingMode },
                     config,
                     (decodedText) => {
                         let token = decodedText;
@@ -138,24 +162,43 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Camera error:', err);
             cameraError.textContent = 'Camera access denied or not available. Please check browser permissions.';
             cameraError.classList.remove('hidden');
-            placeholder.style.display = 'flex';
-            readerDiv.style.display = 'none';
-            startBtn.style.display = 'inline-flex';
-            stopBtn.style.display = 'none';
+            resetScannerUI();
         }
+    }
+    
+    function resetScannerUI() {
+        placeholder.style.display = 'flex';
+        readerDiv.style.display = 'none';
+        startBtn.style.display = 'inline-flex';
+        cameraSelect.disabled = false;
+        stopBtn.style.display = 'none';
+        switchBtn.style.display = 'none';
+    }
+    
+    startBtn.addEventListener('click', function() {
+        startScanner(cameraSelect.value);
     });
     
     stopBtn.addEventListener('click', stopScanner);
+    
+    switchBtn.addEventListener('click', async function() {
+        const newFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+        cameraSelect.value = newFacingMode;
+        
+        if (html5QrCode && isScanning) {
+            await html5QrCode.stop();
+            isScanning = false;
+            readerDiv.innerHTML = '';
+            await startScanner(newFacingMode);
+        }
+    });
     
     function stopScanner() {
         if (html5QrCode && isScanning) {
             html5QrCode.stop().then(() => {
                 isScanning = false;
-                readerDiv.style.display = 'none';
                 readerDiv.innerHTML = '';
-                placeholder.style.display = 'flex';
-                startBtn.style.display = 'inline-flex';
-                stopBtn.style.display = 'none';
+                resetScannerUI();
             }).catch(err => console.error(err));
         }
     }
