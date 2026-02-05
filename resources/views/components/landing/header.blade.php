@@ -8,10 +8,30 @@
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-8">
-                <a href="{{ url('/') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('/') ? 'text-[#004d2c] uppercase' : '' }}">Home</a>
-                <a href="{{ url('/products') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('products*') ? 'text-[#004d2c] uppercase' : '' }}">Shop</a>
-                <a href="{{ url('/blog') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('blog*') ? 'text-[#004d2c] uppercase' : '' }}">Blog</a>
-                <a href="{{ url('/verify') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('verify*') ? 'text-[#004d2c] uppercase' : '' }}">Verify</a>
+                <a href="{{ url('/') }}" 
+                    class="inline-block pb-1 text-xs font-medium tracking-wider transition-[border-bottom-color] duration-300 ease-in-out border-b-1  
+                    {{ request()->is('/') ? 'text-[#004d2c] border-[#004d2c]' : 'text-neutral-700 border-transparent hover:text-[#004d2c] hover:border-[#004d2c]' }}">
+                    Home
+                </a>
+
+                <a href="{{ url('/products') }}" 
+                class="inline-block pb-1 text-xs font-medium tracking-wider transition-[border-bottom-color] duration-300 ease-in-out border-b-1
+                {{ request()->is('products*') ? 'text-[#004d2c] border-[#004d2c]' : 'text-neutral-700 border-transparent hover:text-[#004d2c] hover:border-[#004d2c]' }}">
+                Shop
+                </a>
+
+                <a href="{{ url('/blog') }}" 
+                    class="inline-block pb-1 text-xs font-medium tracking-wider transition-[border-bottom-color] duration-300 ease-in-out border-b-1
+                    {{ request()->is('blog*') ? 'text-[#004d2c] border-[#004d2c]' : 'text-neutral-700 border-transparent hover:text-[#004d2c] hover:border-[#004d2c]' }}">
+                    Blog
+                </a>
+
+                <a href="{{ url('/verify') }}" 
+                    class="inline-block pb-1 text-xs font-medium tracking-wider transition-[border-bottom-color] duration-300 ease-in-out border-b-1 
+                    {{ request()->is('verify*') ? 'text-[#004d2c] border-[#004d2c]' : 'text-neutral-700 border-transparent hover:text-[#004d2c] hover:border-[#004d2c]' }}">
+                    Verify
+                </a>
+
             </div>
 
             <!-- Mobile Menu Button -->
