@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn-primary mt-6">Change Password</button>
+                <button type="submit" class="btn-error mt-6">Change Password</button>
             </form>
         </div>
     </div>

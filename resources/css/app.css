@@ -62,6 +62,24 @@ h1, h2, h3, .heading {
     background-color: #003d23;
 }
 
+.btn-error {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+    background-color: #dc2626;;
+    color: white;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.btn-error:hover {
+    background-color: #b91c1c;
+}
+
 .btn-secondary {
     display: inline-flex;
     align-items: center;
