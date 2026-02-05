@@ -28,9 +28,9 @@
                 <div class="w-10"></div>
             </header>
             
-            <main class="flex-1 p-6 lg:p-3">
+            <main class="flex-1 p-6 lg:pt-1">
                 <!-- Page Header -->
-                <div class="flex flex-col items-center justify-between mb-8 pb-1 border-b border-[#e5dfd2]">
+                <div class="flex flex-col items-center justify-between mb-8 pb-3 border-b border-[#e5dfd2]">
                     <h1 class="text-xl font-bold text-[#003d23]">@yield('page-title', 'Dashboard')</h1>
                     @hasSection('page-description')
                         <span class="text-sm text-neutral-400">@yield('page-description')</span>
