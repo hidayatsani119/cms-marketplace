@@ -24,7 +24,7 @@
             
             @foreach($menuItems as $item)
                 @php $isActive = request()->routeIs($item['routeIs']); @endphp
-                <a href="{{ route($item['route']) }}" class="sidebar-item group relative flex items-center justify-center lg:justify-center gap-3 px-3 py-3 text-sm font-medium transition-colors {{ $isActive ? 'bg-[#004d2c] text-white' : 'text-neutral-600 hover:bg-[#e5dfd2] hover:text-[#004d2c]' }}">
+                <a href="{{ route($item['route']) }}" class="sidebar-item group relative flex items-center justify-start lg:justify-center gap-3 px-6 lg:px-3 py-3 text-sm font-medium transition-colors {{ $isActive ? 'bg-[#004d2c] text-white' : 'text-neutral-600 hover:bg-[#e5dfd2] hover:text-[#004d2c]' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $item['icon'] }}" />
                     </svg>
@@ -37,7 +37,7 @@
         <!-- Bottom Menu -->
         <div class="p-2 border-t border-[#e5dfd2] overflow-visible space-y-1">
             <!-- View Site -->
-            <a href="{{ url('/') }}" target="_blank" class="sidebar-item group relative flex items-center justify-center lg:justify-center gap-3 px-3 py-3 text-sm font-medium text-neutral-600 hover:bg-[#e5dfd2] hover:text-[#004d2c] transition-colors">
+            <a href="{{ url('/') }}" target="_blank" class="sidebar-item group relative flex items-center justify-start lg:justify-center gap-3 px-6 lg:px-3 py-3 text-sm font-medium text-neutral-600 hover:bg-[#e5dfd2] hover:text-[#004d2c] transition-colors">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -47,7 +47,7 @@
             
             <!-- Profile -->
             @php $isProfileActive = request()->routeIs('admin.profile'); @endphp
-            <a href="{{ route('admin.profile') }}" class="sidebar-item group relative flex items-center justify-center lg:justify-center gap-3 px-3 py-3 text-sm font-medium transition-colors {{ $isProfileActive ? 'bg-[#004d2c] text-white' : 'text-neutral-600 hover:bg-[#e5dfd2] hover:text-[#004d2c]' }}">
+            <a href="{{ route('admin.profile') }}" class="sidebar-item group relative flex items-center justify-start lg:justify-center gap-3 px-6 lg:px-3 py-3 text-sm font-medium transition-colors {{ $isProfileActive ? 'bg-[#004d2c] text-white' : 'text-neutral-600 hover:bg-[#e5dfd2] hover:text-[#004d2c]' }}">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -58,7 +58,7 @@
             <!-- Logout -->
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST">
                 @csrf
-                <button type="button" onclick="confirmLogout()" class="sidebar-item group relative flex items-center justify-center lg:justify-center gap-3 px-3 py-3 text-sm font-medium w-full text-red-500 hover:bg-red-50 transition-colors">
+                <button type="button" onclick="confirmLogout()" class="sidebar-item group relative flex items-center justify-start lg:justify-center gap-3 px-6 lg:px-3 py-3 text-sm font-medium w-full text-red-500 hover:bg-red-50 transition-colors">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
@@ -77,8 +77,8 @@
         left: 100%;
         margin-left: 8px;
         padding: 8px 12px;
-        background-color: #171717;
-        color: white;
+        background-color:#003d23;
+        color: #f8f6f1;
         font-size: 13px;
         white-space: nowrap;
         z-index: 9999;

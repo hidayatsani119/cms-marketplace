@@ -10,13 +10,16 @@
     @stack('styles')
 </head>
 <body class="antialiased min-h-screen bg-[#f8f6f1]">
-    <div class="flex min-h-screen">
+    <div class="flex min-h-screen relative">
+        <!-- Mobile Backdrop -->
+        <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden transition-opacity"></div>
+
         @include('components.admin.sidebar')
         
         <div class="flex-1 flex flex-col lg:ml-16">
             <!-- Mobile Header -->
-            <header class="lg:hidden bg-white border-b border-[#e5dfd2] px-4 py-3 flex items-center justify-between">
-                <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="p-2 text-neutral-600">
+            <header class="lg:hidden bg-white border-b border-[#e5dfd2] px-4 py-3 flex items-center justify-between sticky top-0 z-20">
+                <button onclick="toggleSidebar()" class="p-2 text-neutral-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
@@ -25,10 +28,10 @@
                 <div class="w-10"></div>
             </header>
             
-            <main class="flex-1 p-6 lg:p-8">
+            <main class="flex-1 p-6 lg:p-3">
                 <!-- Page Header -->
-                <div class="flex items-baseline justify-between mb-8 pb-6 border-b border-[#e5dfd2]">
-                    <h1 class="text-xl font-semibold text-neutral-900">@yield('page-title', 'Dashboard')</h1>
+                <div class="flex flex-col items-center justify-between mb-8 pb-1 border-b border-[#e5dfd2]">
+                    <h1 class="text-xl font-bold text-[#003d23]">@yield('page-title', 'Dashboard')</h1>
                     @hasSection('page-description')
                         <span class="text-sm text-neutral-400">@yield('page-description')</span>
                     @endif
@@ -101,6 +104,21 @@
                     document.getElementById('logout-form').submit();
                 }
             });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // Open sidebar
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                // Close sidebar
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
         }
     </script>
     <style>

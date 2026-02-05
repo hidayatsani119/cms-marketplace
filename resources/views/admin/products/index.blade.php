@@ -7,17 +7,19 @@
 @section('content')
     <!-- Filters & Action -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <form action="{{ route('admin.products.index') }}" method="GET" class="flex items-center gap-3">
+        <form action="{{ route('admin.products.index') }}" method="GET" class="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..." 
-                   class="px-4 py-2 border border-[#e5dfd2] bg-white text-sm focus:outline-none focus:border-[#004d2c] w-64">
-            <select name="status" class="px-4 py-2 border border-[#e5dfd2] bg-white text-sm focus:outline-none">
-                <option value="">All Status</option>
-                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
-            </select>
-            <button type="submit" class="px-4 py-2 bg-[#004d2c] text-white text-sm hover:bg-[#003d23] transition-colors">
-                Filter
-            </button>
+                   class="px-4 py-2 border border-[#e5dfd2] bg-white text-sm focus:outline-none focus:border-[#004d2c] w-full sm:w-64">
+            <div class="flex gap-3">
+                <select name="status" class="px-4 py-2 border border-[#e5dfd2] bg-white text-sm focus:outline-none flex-1 sm:flex-none">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
+                <button type="submit" class="px-4 py-2 bg-[#004d2c] text-white text-sm hover:bg-[#003d23] transition-colors">
+                    Filter
+                </button>
+            </div>
         </form>
         <a href="{{ route('admin.products.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#004d2c] text-white text-sm hover:bg-[#003d23] transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
