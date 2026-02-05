@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'ScanCare - Authentic Products')
+@section('title', 'ScanCare | Authentic Products')
 @section('description', 'Discover and verify authentic products with ScanCare')
 
 @section('content')
