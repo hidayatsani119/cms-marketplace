@@ -10,6 +10,7 @@
             <div class="hidden md:flex items-center gap-8">
                 <a href="{{ url('/') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('/') ? 'text-[#004d2c] uppercase' : '' }}">Home</a>
                 <a href="{{ url('/products') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('products*') ? 'text-[#004d2c] uppercase' : '' }}">Shop</a>
+                <a href="{{ url('/blog') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('blog*') ? 'text-[#004d2c] uppercase' : '' }}">Blog</a>
                 <a href="{{ url('/verify') }}" class="text-xs font-medium text-neutral-700 hover:text-[#004d2c] transition-colors tracking-wider {{ request()->is('verify*') ? 'text-[#004d2c] uppercase' : '' }}">Verify</a>
             </div>
 
@@ -26,6 +27,7 @@
             <div class="flex flex-col gap-1">
                 <a href="{{ url('/') }}" class="px-4 py-3 text-xs font-medium text-neutral-700 hover:text-[#004d2c] hover:bg-[#f0ece3] tracking-wider uppercase">Home</a>
                 <a href="{{ url('/products') }}" class="px-4 py-3 text-xs font-medium text-neutral-700 hover:text-[#004d2c] hover:bg-[#f0ece3] tracking-wider uppercase">Shop</a>
+                <a href="{{ url('/blog') }}" class="px-4 py-3 text-xs font-medium text-neutral-700 hover:text-[#004d2c] hover:bg-[#f0ece3] tracking-wider uppercase">Blog</a>
                 <a href="{{ url('/verify') }}" class="px-4 py-3 text-xs font-medium text-neutral-700 hover:text-[#004d2c] hover:bg-[#f0ece3] tracking-wider uppercase">Verify</a>
             </div>
         </div>

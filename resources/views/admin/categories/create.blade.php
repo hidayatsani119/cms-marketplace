@@ -2,6 +2,7 @@
 
 @section('title', 'Add Category')
 @section('page-title', 'Add Category')
+@section('page-description', 'Create a new product category')
 
 @section('content')
     <div class="max-w-xl">

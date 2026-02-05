@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Models\Product;
 use App\Models\Product_qr_code;
 use App\Models\User;
@@ -16,6 +17,8 @@ class DashboardController extends Controller
             'active_products' => Product::where('status', 'active')->count(),
             'total_qr_codes' => Product_qr_code::count(),
             'total_users' => User::count(),
+            'total_posts' => Post::count(),
+            'published_posts' => Post::published()->count(),
         ];
 
         $recentProducts = Product::latest()->limit(5)->get();

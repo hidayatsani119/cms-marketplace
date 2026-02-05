@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Web\BlogController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductPageController;
 use App\Http\Controllers\Web\QrVerificationController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\QrCodeController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -23,6 +25,10 @@ Route::get('/products', [ProductPageController::class, 'index'])->name('products
 Route::get('/products/{id}', [ProductPageController::class, 'show'])->name('products.show');
 Route::get('/verify', [QrVerificationController::class, 'index'])->name('verify');
 Route::get('/verify/{token}', [QrVerificationController::class, 'verify'])->name('verify.token');
+
+// Blog Routes
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Admin Routes
 Route::prefix('admin')->group(function () {
@@ -59,6 +65,16 @@ Route::prefix('admin')->group(function () {
         Route::get('/qr-codes', [QrCodeController::class, 'index'])->name('admin.qr-codes.index');
         Route::post('/qr-codes/{product}', [QrCodeController::class, 'store'])->name('admin.qr-codes.store');
         Route::delete('/qr-codes/{qrCode}', [QrCodeController::class, 'destroy'])->name('admin.qr-codes.destroy');
+        
+        // Posts (Blog)
+        Route::resource('posts', PostController::class)->names([
+            'index' => 'admin.posts.index',
+            'create' => 'admin.posts.create',
+            'store' => 'admin.posts.store',
+            'edit' => 'admin.posts.edit',
+            'update' => 'admin.posts.update',
+            'destroy' => 'admin.posts.destroy',
+        ]);
         
         // Profile
         Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
